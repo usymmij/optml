@@ -1,0 +1,23 @@
+.react-flow__node {
+    @apply px-4 py-1 rounded-lg border border-secondary bg-card text-card-foreground shadow-sm;
+}
+
+.react-flow__node.selected {
+    @apply border-primary;
+}
+
+.react-flow__handle {
+    @apply bg-primary rounded-2xl border;
+}
+
+.react-flow__handle.react-flow__handle-top, .react-flow__handle.react-flow__handle-bottom {
+    @apply w-4;
+}
+
+.react-flow__handle.react-flow__handle-left, .react-flow__handle.react-flow__handle-right {
+    @apply h-4;
+}
+
+.react-flow__handle.react-flow__handle-connecting, .react-flow__handle.react-flow__handle-valid {
+    @apply bg-green-500 border-green-800;
+}
