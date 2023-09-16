@@ -21,6 +21,7 @@ model OptMLModel {
 model OptMLModelStats {
   id       String      @id @default(cuid())
   time     DateTime    @default(now())
+  epoch    Int
   optml_id String?
   accuracy Float
   loss     Float
