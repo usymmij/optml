@@ -1,4 +1,5 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from typing import Annotated
+from fastapi import BackgroundTasks, FastAPI, UploadFile, WebSocket, WebSocketDisconnect, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from connection_manager import ConnectionManager
 from database import Database
@@ -63,16 +64,21 @@ async def retrieve_model(model_id):
         return model.flow_data
     except:
         raise HTTPException(status_code=404, detail="Model not found")
+    
+
+def train(model, training_data):
+    pass
 
 
-@app.post("/compile/{model_id}")
-async def compile_model(model_id: str, optimizer: str):
+@app.post("/train/{model_id}")
+async def train_model(model_id: str, optimizer: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks):
     print("Compiling model...")
     model = await db.find_model(model_id)
 
     # build and generate
-    keras_model = KerasGen(model)
-    keras_model.set_optimizer(optimizer)
-    keras_model.translate_and_compile()
+    keras_model = KerasGen(model.flow_data)
+    sequential = keras_model.translate_and_compile()
 
-    return model.flow_data
+    background_tasks.add_task()
+
+    return model.id

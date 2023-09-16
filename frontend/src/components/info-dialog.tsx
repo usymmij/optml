@@ -11,10 +11,7 @@ export default function InfoDialog(
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="border-b border-secondary -mx-6 pb-2 flex flex-row w-full justify-center items-center gap-2 hover:cursor-pointer">
-          <h2 className="text-lg font-semibold">{props.title}</h2>
-          <LucideBadgeInfo className={props.className} size={16} />
-        </div>
+        <LucideBadgeInfo className={props.className} size={16} />
       </DialogTrigger>
       <DialogContent>
         <DialogTitle>{props.title}</DialogTitle>

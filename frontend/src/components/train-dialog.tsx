@@ -19,29 +19,31 @@ import {
 import { Button } from "./ui/button";
 import axios, { AxiosError } from "axios";
 import { useToast } from "./ui/use-toast";
+import { Input } from "./ui/input";
 
-export default function CompileDialog(
+export default function TrainDialog(
   props: PropsWithChildren<{
     id: string;
     save: () => Promise<any>;
   }>
 ) {
   const { toast } = useToast();
+  const [trainingData, setTrainingData] = useState<File | null>(null);
   const [value, setValue] = useState("rmsprop");
   const [open, setOpen] = useState(false);
 
   const handleRun = () => {
     (async () => {
       await props.save();
+
+      const form = new FormData();
+      form.append("optimizer", value);
+      form.append("training_data", trainingData as File);
+
       try {
         const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/compile/${props.id}`,
-          null,
-          {
-            params: {
-              optimizer: value,
-            },
-          }
+          `${process.env.NEXT_PUBLIC_API_URL}/train/${props.id}`,
+          form
         );
 
         if (res.status === 200) {
@@ -73,12 +75,22 @@ export default function CompileDialog(
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Compile opt<b>ML</b> Model
+            Train opt<b>ML</b> Model
           </DialogTitle>
           <DialogDescription>
-            Compile your model to run remotely.
+            Train your model to run remotely.
           </DialogDescription>
         </DialogHeader>
+        <Label>Training Data Set</Label>
+        <Input
+          type="file"
+          accept=".npy,.npz"
+          onChange={(e) => {
+            if (e.target.files) {
+              setTrainingData(e.target.files[0]);
+            }
+          }}
+        />
         <Label>Optimizer</Label>
         <Select defaultValue="rmsprop" value={value} onValueChange={setValue}>
           <SelectTrigger>
@@ -91,7 +103,9 @@ export default function CompileDialog(
           </SelectContent>
         </Select>
         <DialogFooter>
-          <Button onClick={handleRun}>Compile</Button>
+          <Button onClick={handleRun} disabled={!trainingData || !value}>
+            Train
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
