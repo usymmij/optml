@@ -1,13 +1,11 @@
-import asyncio
-from time import sleep
-from fastapi import BackgroundTasks, FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from uuid import uuid4, UUID
+from connection_manager import ConnectionManager
 from database import Database
-import json
 
+manager = ConnectionManager()
+db = Database()
 app = FastAPI()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins="http://localhost:3000",
@@ -16,82 +14,53 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: dict[str, list[WebSocket]] = {}
-
-    async def connect(self, websocket: WebSocket, client_id: str):
-        await websocket.accept()
-        if client_id in self.active_connections:
-            self.active_connections[client_id].append(websocket)
-        else:
-            self.active_connections[client_id] = [websocket]
-
-    def disconnect(self, websocket: WebSocket, client_id: str):
-        self.active_connections[client_id].remove(websocket)
-        if len(self.active_connections[client_id]) == 0:
-            del self.active_connections[client_id]
-
-    async def send_model_message(self, message: str, client_id: str):
-        if client_id in self.active_connections:
-            for connection in self.active_connections.get(client_id):
-                await connection.send_text(message)
-
-    async def send_personal_json(self, client_id: str, data: dict):
-        if client_id in self.active_connections:
-            for connection in self.active_connections.get(client_id):
-                await connection.send_json(data)
-
-    async def broadcast(self, message: str):
-        for client_id in self.active_connections:
-            for connection in self.active_connections.get(client_id):
-                await connection.send_text(message)
-
-manager = ConnectionManager()
-db = Database()
 
 @app.on_event("startup")
-async def startup_event():
+async def startup():
     await db.connect()
 
 
+@app.on_event("shutdown")
+async def shutdown():
+    await db.disconnect()
 
-async def dummy_progress(id: UUID):
-    for i in range(10):
-        if manager.active_connections.get(str(id)):
-            await manager.send_personal_json(str(id), {"progress": i})
-        await asyncio.sleep(1)
-    await manager.send_personal_json(str(id), {"progress": 0})
 
-@app.post("/upload")
-async def upload_flow_schema(data: dict, background_tasks: BackgroundTasks):
-    if data:
-        id = uuid4()
-        background_tasks.add_task(dummy_progress, id)
-        return id
-
-@app.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: str):
-    await manager.connect(websocket, client_id)
+@app.websocket("/ws/{model_id}")
+async def websocket_endpoint(websocket: WebSocket, model_id: str):
+    await manager.connect(websocket, model_id)
     try:
-        await manager.send_model_message(f"Welcome client #{client_id}", client_id)
+        await manager.send_model_json(model_id, {
+            'message': f"Welcome client #{model_id}"
+        })
         while True:
             data = await websocket.receive_text()
             print(data)
     except WebSocketDisconnect:
-        manager.disconnect(websocket, client_id)
-        await manager.broadcast(f"Client #{client_id} left the chat")
+        manager.disconnect(websocket, model_id)
+        await manager.broadcast(f"Client #{model_id} left the chat")
+
 
 @app.post("/create")
-async def createModel():
-    await db.addModel()
-    return
+async def create_model():
+    model = await db.create_model()
+    return model.id
 
-@app.post("/update")
-async def updateModel(model_id: str, model_data: dict):
-    update = await db.updateModel(model_id, model_data)
+
+@app.post("/update/{model_id}")
+async def update_model(model_id: str, model_data: dict):
+    await db.update_model(model_id, model_data)
+    return model_id
+
 
 @app.get("/models/{model_id}")
 async def retrieve_model(model_id):
-    model = await db.findModel(model_id)
-    return model.json
+    model = await db.find_model(model_id)
+    return model.flow_data
+
+
+@app.post("/compile/{model_id}")
+async def compile_model(model_id):
+    # TODO: Implement this
+    print("Compiling model...")
+    model = await db.find_model(model_id)
+    return model.flow_data
