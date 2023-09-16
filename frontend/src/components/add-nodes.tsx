@@ -14,9 +14,9 @@ function AddNodes() {
       <PopoverContent className="z-20">
         <h3 className="text-lg font-semibold mb-2">Add Node</h3>
         <div className="grid gap-2 md:grid-cols-3">
-          <DragNode nodeType="side-input">Input</DragNode>
-          <DragNode nodeType="side-default">Default</DragNode>
-          <DragNode nodeType="side-output">Output</DragNode>
+          <DragNode nodeType="data-input">Input</DragNode>
+          <DragNode nodeType="conv1d">Conv1D</DragNode>
+          <DragNode nodeType="conv2d">Conv2D</DragNode>
         </div>
       </PopoverContent>
     </Popover>

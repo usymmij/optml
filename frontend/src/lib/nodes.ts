@@ -12,6 +12,18 @@ export type Nodes =
   | "conv2d"
   | "conv3d";
 
+export const defaultNodeData: { [key: string]: any } = {
+  "data-input": {
+    shape: [64, 64, 3],
+  },
+  dense: { units: 16, activation: "relu" },
+  normalization: {},
+  "batch-normalization": {},
+  conv1d: { filters: 16, kernel_size: 3, strides: 1, padding: "same" },
+  conv2d: { filters: 16, kernel_size: [3, 3], strides: 1, padding: "same" },
+  conv3d: { filters: 16, kernel_size: [3, 3, 3], strides: 1, padding: "same" },
+};
+
 const initialNodes: Node[] = [
   {
     id: "1",

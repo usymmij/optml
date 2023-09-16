@@ -1,5 +1,6 @@
 "use client";
 
+import { v4 as uuidv4 } from "uuid";
 import Dagre from "dagre";
 import DataInput from "./nodes/data-input";
 import Dense from "./nodes/dense";
@@ -24,6 +25,7 @@ import "@/lib/styles/flow.css";
 import FlowMenubar from "./flow-menubar";
 import FlowActions from "./flow-actions";
 import { useToast } from "./ui/use-toast";
+import { defaultNodeData } from "@/lib/nodes";
 
 const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
@@ -84,10 +86,6 @@ function Flow() {
     }
   }, [rfInstance, toast]);
 
-  const getId = useCallback(() => {
-    return `${nodes.length + 1}`;
-  }, [nodes]);
-
   const onDragOver = useCallback((event: DragEvent) => {
     event.preventDefault();
 
@@ -109,25 +107,32 @@ function Flow() {
         return;
       }
 
+      if (type === "data-input") {
+        if (nodes.some((node) => node.type === "data-input")) {
+          toast({
+            title: "Data input already exists",
+            description: "You can only have one data input node.",
+            duration: 3000,
+          });
+          return;
+        }
+      }
+
       const position = rfInstance.project({
         x: event.clientX - reactFlowBounds.left,
         y: event.clientY - reactFlowBounds.top,
       });
 
-      const id = getId();
-
       const node: Node = {
-        id,
+        id: uuidv4(),
         type,
         position,
-        data: {
-          label: `Node ${id}`,
-        },
+        data: defaultNodeData[type],
       };
 
       setNodes([...nodes, node]);
     },
-    [rfInstance, getId, setNodes, nodes]
+    [rfInstance, setNodes, toast, nodes]
   );
 
   const onLayout = useCallback(() => {

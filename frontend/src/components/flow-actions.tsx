@@ -1,14 +1,13 @@
 import AddNodes from "./add-nodes";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
-import { LucideAlignHorizontalJustifyStart, LucidePlay } from "lucide-react";
+import { LucideAlignHorizontalJustifyStart, LucideCombine } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
-import { Progress } from "./ui/progress";
 
 type FlowActionsProps = {
   onLayout: () => void;
@@ -25,7 +24,7 @@ function FlowActions(props: FlowActionsProps) {
           props.className
         )}
       >
-        <div className="flex flex-row justify-between gap-2">
+        <div className="flex flex-row justify-between gap-2 w-full">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -41,9 +40,9 @@ function FlowActions(props: FlowActionsProps) {
           <AddNodes />
         </div>
         <Button size="lg" className="w-full" onClick={props.onRun}>
-          <div className="flex flex-row">
-            <LucidePlay />
-            <p>Run</p>
+          <div className="flex flex-row items-center gap-2">
+            <LucideCombine />
+            <p>Compile</p>
           </div>
         </Button>
       </footer>
