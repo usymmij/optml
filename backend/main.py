@@ -5,6 +5,7 @@ from backend.callback_manager import CallbackManager
 from connection_manager import ConnectionManager
 from database import Database
 from kerasgen import KerasGen
+import numpy as np
 
 manager = ConnectionManager()
 db = Database()
@@ -67,11 +68,6 @@ async def retrieve_model(model_id):
     except:
         raise HTTPException(status_code=404, detail="Model not found")
 
-
-def train(model, training_data):
-    pass
-
-
 @app.post("/train/{model_id}")
 async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: Annotated[str, Form()], batch_size: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks):
     print("Compiling model...")
@@ -82,8 +78,9 @@ async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: 
     # build and generate
     callback_manager = CallbackManager(model_id, db, manager)
     keras_model = KerasGen(model.flow_data, callback_manager)
-    sequential = keras_model.translate_and_compile()
+    keras_model.set_hyperparams(optimizer, num_batch_size, num_epochs)
+    keras_model.translate_and_compile()
 
-    background_tasks.add_task()
+    background_tasks.add_task(keras_model.training, training_data.file)
 
     return model.id
