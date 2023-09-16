@@ -1,11 +1,8 @@
 import { memo } from "react";
 import { Handle, NodeProps, Position } from "reactflow";
+import { NodeData } from "./types";
 
-function SideDefault({
-  data,
-}: NodeProps<{
-  label: string;
-}>) {
+function SideDefault({ data }: NodeProps<NodeData>) {
   return (
     <>
       <Handle type="target" position={Position.Left} />

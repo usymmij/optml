@@ -1,6 +1,11 @@
 "use client";
 
 import Dagre from "dagre";
+import DataInput from "./nodes/data-input";
+import Dense from "./nodes/dense";
+import Conv1D from "./nodes/conv-1d";
+import Normalization from "./nodes/normalization";
+import BatchNormalization from "./nodes/batch-normalization";
 import SideDefault from "./nodes/side-default";
 import SideInput from "./nodes/side-input";
 import SideOutput from "./nodes/side-output";
@@ -18,6 +23,11 @@ import "@/lib/styles/flow.css";
 const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
 const nodeTypes: NodeTypes = {
+  "data-input": DataInput,
+  "dense": Dense,
+  "normalization": Normalization,
+  "batch-normalization": BatchNormalization,
+  "conv1d": Conv1D,
   "side-input": SideInput,
   "side-default": SideDefault,
   "side-output": SideOutput,
