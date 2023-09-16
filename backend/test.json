@@ -1,0 +1,107 @@
+{
+    "nodes": [
+        {
+            "id": "1",
+            "type": "data-input",
+            "data": {
+                "shape": [
+                    1,2,3
+                ]
+            },
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "positionAbsolute": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "id": "3",
+            "type": "dense",
+            "data": {
+                "shape": [
+                    1,2,3
+                ]
+            },
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "positionAbsolute": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "id": "5",
+            "type": "dense",
+            "data": {
+                "shape": [
+                    1,2,3
+                ]
+            },
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "positionAbsolute": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "id": "4",
+            "type": "dense",
+            "data": {
+                "shape": [
+                    1,2,3
+                ]
+            },
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "positionAbsolute": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "id": "2",
+            "type": "dense",
+            "data": {
+                "shape": [
+                    1,2,3
+                ]
+            },
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "positionAbsolute": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ],
+    "edges": [
+        {
+            "id": "e1",
+            "source": "1",
+            "target": "2",
+            "animated": true
+        },
+        {
+            "id": "e2",
+            "source": "2",
+            "target": "3"
+        }
+    ],
+    "viewport": {
+        "x": 136,
+        "y": 325.5,
+        "zoom": 2
+    }
+}
