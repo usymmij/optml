@@ -8,10 +8,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "./ui/tooltip";
+import CompileDialog from "./compile-dialog";
 
 type FlowActionsProps = {
+  id: string;
   onLayout: () => void;
-  onRun: () => void;
+  save: () => Promise<any>;
   className?: string;
 };
 
@@ -39,12 +41,14 @@ function FlowActions(props: FlowActionsProps) {
           </TooltipProvider>
           <AddNodes />
         </div>
-        <Button size="lg" className="w-full" onClick={props.onRun}>
-          <div className="flex flex-row items-center gap-2">
-            <LucideCombine />
-            <p>Compile</p>
-          </div>
-        </Button>
+        <CompileDialog id={props.id} save={props.save}>
+          <Button size="lg" className="w-full">
+            <div className="flex flex-row items-center gap-2">
+              <LucideCombine />
+              <p>Compile</p>
+            </div>
+          </Button>
+        </CompileDialog>
       </footer>
       <h1 className="absolute bottom-0 left-0 p-4 text-2xl">
         opt<span className="font-bold">ML</span>

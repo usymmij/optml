@@ -65,7 +65,7 @@ async def retrieve_model(model_id):
 
 
 @app.post("/compile/{model_id}")
-async def compile_model(model_id):
+async def compile_model(model_id: str, optimizer: str):
     # TODO: Implement this
     print("Compiling model...")
     model = await db.find_model(model_id)

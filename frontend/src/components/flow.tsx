@@ -100,44 +100,47 @@ function Flow({ id }: { id: string }) {
         } catch (err) {
           toast({
             title: "Could not load flow",
-            description: "Could not load the flow you requested. Loading default flow instead.",
+            description:
+              "Could not load the flow you requested. Loading default flow instead.",
             duration: 3000,
-          })
+          });
         }
       })();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, setNodes, setEdges, toast]);
 
-  const onSave = useCallback(() => {
-    if (rfInstance && id) {
-      const flow = rfInstance.toObject();
+  const save = useCallback(async () => {
+    if (!rfInstance || !id) return;
 
-      (async () => {
-        const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/update/${id}`,
-          flow
-        );
+    const flow = rfInstance.toObject();
 
-        if (res.status === 200) {
-          if (res.data === id) {
-            return toast({
-              title: "Flow saved",
-              description: "Your flow has been saved.",
-              duration: 3000,
-            });
-          }
-        }
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/update/${id}`,
+      flow
+    );
 
+    if (res.status === 200) {
+      if (res.data === id) {
         return toast({
-          title: "Flow not saved",
-          description: "Your flow could not be saved.",
-          variant: "destructive",
+          title: "Flow saved",
+          description: "Your flow has been saved.",
           duration: 3000,
         });
-      })();
+      }
     }
+
+    return toast({
+      title: "Flow not saved",
+      description: "Your flow could not be saved.",
+      variant: "destructive",
+      duration: 3000,
+    });
   }, [rfInstance, id, toast]);
+
+  const onSave = useCallback(() => {
+    save();
+  }, [save]);
 
   const onDragOver = useCallback((event: DragEvent) => {
     event.preventDefault();
@@ -233,7 +236,7 @@ function Flow({ id }: { id: string }) {
       >
         <Background />
       </ReactFlow>
-      <FlowActions onLayout={onLayout} onRun={onSave} className="z-10" />
+      <FlowActions onLayout={onLayout} id={id} save={save} className="z-10" />
     </div>
   );
 }
