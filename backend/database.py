@@ -35,6 +35,24 @@ class Database:
             },
         )
 
+    async def new_stats(self, model_id, accuracy: float, loss: float):
+        await self.db.optmlmodelstats.create(data={
+            'model': {
+                'connect': {
+                    'id': model_id
+                }
+            },
+            'accuracy': accuracy,
+            'loss': loss
+        })
+
+    async def get_stats(self, model_id):
+        return await self.db.optmlmodelstats.find_many(where={
+            'model': {
+                'id': model_id
+            }
+        })
+
     async def disconnect(self):
         await self.db.disconnect()
 

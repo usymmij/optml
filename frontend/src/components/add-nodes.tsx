@@ -17,6 +17,12 @@ function AddNodes() {
           <DragNode nodeType="data-input">Input</DragNode>
           <DragNode nodeType="conv1d">Conv1D</DragNode>
           <DragNode nodeType="conv2d">Conv2D</DragNode>
+          <DragNode nodeType="conv3d">Conv3D</DragNode>
+          <DragNode nodeType="dense">Dense</DragNode>
+          <DragNode nodeType="dropout">Dropout</DragNode>
+          <DragNode nodeType="flatten">Flatten</DragNode>
+          <DragNode nodeType="normalization">Norm</DragNode>
+          <DragNode nodeType="batch-normalization">Batch Norm</DragNode>
         </div>
       </PopoverContent>
     </Popover>

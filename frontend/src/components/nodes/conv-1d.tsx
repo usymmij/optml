@@ -30,7 +30,20 @@ function Conv1D({ id, data }: NodeProps<Conv1DType>) {
         position={Position.Right}
       />
       <div className="flex flex-col gap-3 px-2 py-1">
-        <NodeTitle title="1D Convolution" />
+        <NodeTitle
+          title="1D Convolution"
+          description={
+            <p>
+              1D convolutional layers are used for processing one-dimensional
+              data sequences. They perform 1D convolutions, sliding a
+              kernel/filter along the input sequence to extract features,
+              detecting patterns, and learning representations relevant to the
+              task. 1D convolutional layers are often used in tasks like natural
+              language processing (NLP) for text classification, sentiment
+              analysis, and speech recognition.
+            </p>
+          }
+        />
         <div className="flex flex-col gap-2">
           <Label>Filters</Label>
           <Input
@@ -53,7 +66,10 @@ function Conv1D({ id, data }: NodeProps<Conv1DType>) {
             min={1}
             value={data.kernel_size}
             onChange={(e) =>
-              updateNodeData(id, { ...data, kernel_size: parseInt(e.target.value) })
+              updateNodeData(id, {
+                ...data,
+                kernel_size: parseInt(e.target.value),
+              })
             }
             placeholder="X..."
             className="w-[180px] focus-visible:ring-0 focus-visible:ring-offset-0"

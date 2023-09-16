@@ -1,4 +1,5 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from typing import Annotated
+from fastapi import BackgroundTasks, FastAPI, UploadFile, WebSocket, WebSocketDisconnect, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from connection_manager import ConnectionManager
 from database import Database
@@ -9,7 +10,7 @@ db = Database()
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins="http://localhost:3000",
+    allow_origins=["http://localhost:3000","https://optml.tech","https://www.optml.tech"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -65,13 +66,21 @@ async def retrieve_model(model_id):
         raise HTTPException(status_code=404, detail="Model not found")
 
 
-@app.post("/compile/{model_id}")
-async def compile_model(model_id: str, optimizer: str):
+def train(model, training_data):
+    pass
+
+
+@app.post("/train/{model_id}")
+async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: Annotated[str, Form()], batch_size: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks):
     print("Compiling model...")
+    num_epochs = int(epochs) if epochs else 1
+    num_batch_size = int(batch_size) if batch_size else 1
     model = await db.find_model(model_id)
 
     # build and generate
-    keras_model = KerasGen(model)
-    keras_model.translate_and_compile()
+    keras_model = KerasGen(model.flow_data)
+    sequential = keras_model.translate_and_compile()
 
-    return model.flow_data
+    background_tasks.add_task()
+
+    return model.id

@@ -30,7 +30,20 @@ function Conv3D({ id, data }: NodeProps<Conv3DType>) {
         position={Position.Right}
       />
       <div className="flex flex-col gap-3 px-2 py-1">
-        <NodeTitle title="3D Convolution" />
+        <NodeTitle
+          title="3D Convolution"
+          description={
+            <p>
+              3D convolutional layers are used for processing three-dimensional
+              data, such as video sequences or volumetric medical images.They
+              perform 3D convolutions by sliding a 3D kernel/filter through the
+              input data to capture spatiotemporal patterns, features, and
+              relationships in the data. 3D convolutional layers are applied in
+              tasks like video action recognition, 3D medical image analysis,
+              and volumetric data processing.
+            </p>
+          }
+        />
         <div className="flex flex-col gap-2">
           <Label>Filters</Label>
           <Input
