@@ -69,7 +69,7 @@ class KerasGen:
         return self.model
 
     # apply hyperparams
-    def compile_model(self, model=None, optimizer=None):
+    def compile_model(self, model=None, optimizer=None, loss='mean_absolute_error'):
         # if no model is given, use the 
         if model == None:
             self.status = 'compiled'
@@ -78,7 +78,7 @@ class KerasGen:
             model = self.model
         if not optimizer in OPTIMIZERS:
             optimizer = self.optimizer
-        model.compile(optimizer, loss='mean_absolute_error')
+        model.compile(optimizer, loss=loss, metrics=["loss", "accuracy"])
         return model
 
     # assemble a keras model from list of layers 
