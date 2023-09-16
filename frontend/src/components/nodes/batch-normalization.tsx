@@ -1,11 +1,20 @@
 import { memo } from "react";
-import { Handle, Position } from "reactflow";
+import { Position } from "reactflow";
+import MaxConnections from "../handles/max-connections";
 
 function BatchNormalization() {
   return (
     <>
-      <Handle type="target" position={Position.Left} />
-      <Handle type="source" position={Position.Right} />
+      <MaxConnections
+        type="target"
+        maxConnections={2}
+        position={Position.Left}
+      />
+      <MaxConnections
+        type="source"
+        maxConnections={2}
+        position={Position.Right}
+      />
       <h2 className="text-lg font-semibold">Batch Normalization</h2>
     </>
   );

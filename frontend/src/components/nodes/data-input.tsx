@@ -14,7 +14,7 @@ function DataInput({ id, data }: NodeProps<DataInputType>) {
     <>
       <MaxConnections
         type="source"
-        maxConnections={1}
+        maxConnections={2}
         position={Position.Right}
       />
       <div className="flex flex-col gap-3 px-2 py-1">

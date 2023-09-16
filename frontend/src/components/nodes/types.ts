@@ -34,3 +34,29 @@ export const Conv1D = z.object({
 });
 
 export type Conv1DType = z.infer<typeof Conv1D>;
+
+export const Conv2D = z.object({
+  filters: z.number(),
+  kernel_size: z.array(z.number()).max(2).min(2),
+  strides: z.number(),
+  padding: z.union([
+    z.literal("same"),
+    z.literal("valid"),
+    z.literal("casual"),
+  ]),
+});
+
+export type Conv2DType = z.infer<typeof Conv2D>;
+
+export const Conv3D = z.object({
+  filters: z.number(),
+  kernel_size: z.array(z.number()).max(3).min(3),
+  strides: z.number(),
+  padding: z.union([
+    z.literal("same"),
+    z.literal("valid"),
+    z.literal("casual"),
+  ]),
+});
+
+export type Conv3DType = z.infer<typeof Conv3D>;

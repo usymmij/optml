@@ -4,6 +4,8 @@ import Dagre from "dagre";
 import DataInput from "./nodes/data-input";
 import Dense from "./nodes/dense";
 import Conv1D from "./nodes/conv-1d";
+import Conv2D from "./nodes/conv-2d";
+import Conv3D from "./nodes/conv-3d";
 import Normalization from "./nodes/normalization";
 import BatchNormalization from "./nodes/batch-normalization";
 import SideDefault from "./nodes/side-default";
@@ -19,15 +21,20 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/base.css";
 import "@/lib/styles/flow.css";
+import FlowMenubar from "./flow-menubar";
+import FlowActions from "./flow-actions";
+import { useToast } from "./ui/use-toast";
 
 const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
 const nodeTypes: NodeTypes = {
   "data-input": DataInput,
-  "dense": Dense,
-  "normalization": Normalization,
+  dense: Dense,
+  normalization: Normalization,
   "batch-normalization": BatchNormalization,
-  "conv1d": Conv1D,
+  conv1d: Conv1D,
+  conv2d: Conv2D,
+  conv3d: Conv3D,
   "side-input": SideInput,
   "side-default": SideDefault,
   "side-output": SideOutput,
@@ -51,6 +58,7 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
 };
 
 function Flow() {
+  const { toast } = useToast();
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
   const { fitView } = useReactFlow();
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
@@ -68,8 +76,13 @@ function Flow() {
     if (rfInstance) {
       const flow = rfInstance.toObject();
       console.log(flow);
+      toast({
+        title: "Flow saved",
+        description: "Your flow has been saved.",
+        duration: 3000,
+      });
     }
-  }, [rfInstance]);
+  }, [rfInstance, toast]);
 
   const getId = useCallback(() => {
     return `${nodes.length + 1}`;
@@ -144,6 +157,7 @@ function Flow() {
 
   return (
     <div ref={reactFlowWrapper} className="h-full">
+      <FlowMenubar onSave={onSave} className="z-10" />
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -161,6 +175,7 @@ function Flow() {
       >
         <Background />
       </ReactFlow>
+      <FlowActions onLayout={onLayout} onRun={onSave} className="z-10" />
     </div>
   );
 }

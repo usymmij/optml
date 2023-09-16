@@ -1,7 +1,7 @@
 import { memo } from "react";
 import { NodeProps, Position } from "reactflow";
 import MaxConnections from "../handles/max-connections";
-import { Conv1DType } from "./types";
+import { Conv2DType } from "./types";
 import { Label } from "../ui/label";
 import useStore from "@/lib/store";
 import { Input } from "../ui/input";
@@ -14,7 +14,7 @@ import {
 } from "../ui/select";
 import NodeTitle from "../node-title";
 
-function Conv1D({ id, data }: NodeProps<Conv1DType>) {
+function Conv2D({ id, data }: NodeProps<Conv2DType>) {
   const updateNodeData = useStore((state) => state.updateNodeData);
 
   return (
@@ -30,7 +30,7 @@ function Conv1D({ id, data }: NodeProps<Conv1DType>) {
         position={Position.Right}
       />
       <div className="flex flex-col gap-3 px-2 py-1">
-        <NodeTitle title="1D Convolution" />
+        <NodeTitle title="2D Convolution" />
         <div className="flex flex-col gap-2">
           <Label>Filters</Label>
           <Input
@@ -42,22 +42,41 @@ function Conv1D({ id, data }: NodeProps<Conv1DType>) {
               updateNodeData(id, { ...data, filters: parseInt(e.target.value) })
             }
             placeholder="Filters..."
-            className="w-[180px] focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
         <div className="flex flex-col gap-2">
           <Label>Kernel Size</Label>
-          <Input
-            id="kernel_size"
-            type="number"
-            min={1}
-            value={data.kernel_size}
-            onChange={(e) =>
-              updateNodeData(id, { ...data, kernel_size: parseInt(e.target.value) })
-            }
-            placeholder="X..."
-            className="w-[180px] focus-visible:ring-0 focus-visible:ring-offset-0"
-          />
+          <div className="flex flex-row gap-2">
+            <Input
+              id="kernel_size"
+              type="number"
+              min={1}
+              value={data.kernel_size[0]}
+              onChange={(e) =>
+                updateNodeData(id, {
+                  ...data,
+                  kernel_size: [parseInt(e.target.value), data.kernel_size[1]],
+                })
+              }
+              placeholder="X..."
+              className="w-[90px] focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+            <Input
+              id="kernel_size"
+              type="number"
+              min={1}
+              value={data.kernel_size[1]}
+              onChange={(e) =>
+                updateNodeData(id, {
+                  ...data,
+                  kernel_size: [data.kernel_size[0], parseInt(e.target.value)],
+                })
+              }
+              placeholder="Y..."
+              className="w-[90px] focus-visible:ring-0 focus-visible:ring-offset-0"
+            />
+          </div>
         </div>
         <div className="flex flex-col gap-2">
           <Label>Strides</Label>
@@ -70,7 +89,7 @@ function Conv1D({ id, data }: NodeProps<Conv1DType>) {
               updateNodeData(id, { ...data, strides: parseInt(e.target.value) })
             }
             placeholder="Strides..."
-            className="w-[180px] focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -81,7 +100,7 @@ function Conv1D({ id, data }: NodeProps<Conv1DType>) {
               updateNodeData(id, { ...data, padding: value });
             }}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger>
               <SelectValue placeholder="Padding type..." />
             </SelectTrigger>
             <SelectContent>
@@ -96,4 +115,4 @@ function Conv1D({ id, data }: NodeProps<Conv1DType>) {
   );
 }
 
-export default memo(Conv1D);
+export default memo(Conv2D);
