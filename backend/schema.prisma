@@ -12,7 +12,17 @@ generator client {
 }
 
 model OptMLModel {
-  id        String  @id @default(cuid())
+  id        String            @id @default(cuid())
   type      String?
   flow_data Json
+  stats     OptMLModelStats[]
+}
+
+model OptMLModelStats {
+  id       String      @id @default(cuid())
+  time     DateTime    @default(now())
+  optml_id String?
+  accuracy Float
+  loss     Float
+  model    OptMLModel? @relation(fields: [optml_id], references: [id])
 }

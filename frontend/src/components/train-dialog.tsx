@@ -29,7 +29,9 @@ export default function TrainDialog(
 ) {
   const { toast } = useToast();
   const [trainingData, setTrainingData] = useState<File | null>(null);
-  const [value, setValue] = useState("rmsprop");
+  const [optimizer, setOptimizer] = useState("rmsprop");
+  const [epochs, setEpochs] = useState(1);
+  const [batchSize, setBatchSize] = useState(1);
   const [open, setOpen] = useState(false);
 
   const handleRun = () => {
@@ -37,8 +39,10 @@ export default function TrainDialog(
       await props.save();
 
       const form = new FormData();
-      form.append("optimizer", value);
+      form.append("optimizer", optimizer);
       form.append("training_data", trainingData as File);
+      form.append("epochs", epochs.toString());
+      form.append("batch_size", batchSize.toString());
 
       try {
         const res = await axios.post(
@@ -91,8 +95,41 @@ export default function TrainDialog(
             }
           }}
         />
+        <div className="flex flex-row gap-4 items-center justify-between">
+          <div className="flex flex-col gap-4 flex-grow">
+            <Label>Epochs</Label>
+            <Input
+              type="number"
+              className="w-full"
+              placeholder="Number of epochs..."
+              min="1"
+              value={epochs}
+              onChange={(e) => {
+                setEpochs(parseInt(e.target.value));
+              }}
+            />
+          </div>
+          <div className="flex flex-col gap-4 flex-grow">
+            <Label>Batch Size</Label>
+            <Input
+              type="number"
+              className="w-full"
+              placeholder="Batch size..."
+              min="1"
+              value={batchSize}
+              onChange={(e) => {
+                setBatchSize(parseInt(e.target.value));
+              }}
+            />
+          </div>
+        </div>
+
         <Label>Optimizer</Label>
-        <Select defaultValue="rmsprop" value={value} onValueChange={setValue}>
+        <Select
+          defaultValue="rmsprop"
+          value={optimizer}
+          onValueChange={setOptimizer}
+        >
           <SelectTrigger>
             <SelectValue placeholder="Select optimization method" />
           </SelectTrigger>
@@ -103,7 +140,17 @@ export default function TrainDialog(
           </SelectContent>
         </Select>
         <DialogFooter>
-          <Button onClick={handleRun} disabled={!trainingData || !value}>
+          <Button
+            onClick={handleRun}
+            disabled={
+              !trainingData ||
+              !optimizer ||
+              !epochs ||
+              epochs < 0 ||
+              !batchSize ||
+              batchSize < 0
+            }
+          >
             Train
           </Button>
         </DialogFooter>
