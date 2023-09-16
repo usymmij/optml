@@ -39,14 +39,22 @@ class KerasGen:
         self.layers = []
         self.model = None
         self.optimizer = 'rmsprop'
+        self.batch_size = 32
+        self.epochs = 10
         self.status = 'build'
         pass
 
     # set the optimizer
     # other hyperparams should also be set here in the future
-    def set_optimizer(self, optimizer):
+    def set_hyperparams(self, optimizer, batch_size, epochs):
         if optimizer in OPTIMIZERS:
             self.optimizer = optimizer
+        self.batch_size = batch_size
+        self.epochs = epochs
+
+    def training(self, data):
+        self.hist = self.model.train(data["trainx"], data["trainy"], batch_size=self.batch_size, epochs=self.epochs)
+        self.model.evaluate(data["testx"], data["testy"], batch_size=self.batch_size)
 
     def translate_and_compile(self):
         self.translate_layers()
@@ -64,7 +72,7 @@ class KerasGen:
             model = self.model
         if not optimizer in OPTIMIZERS:
             optimizer = self.optimizer
-        model.compile(optimizer)
+        model.compile(optimizer, loss='mean_absolute_error')
         return model
 
     # assemble a keras model from list of layers 
