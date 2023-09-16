@@ -35,13 +35,14 @@ class Database:
             },
         )
 
-    async def new_stats(self, model_id, accuracy: float, loss: float):
+    async def new_stats(self, model_id: str, epoch: int, accuracy: float, loss: float):
         await self.db.optmlmodelstats.create(data={
             'model': {
                 'connect': {
                     'id': model_id
                 }
             },
+            'epoch': epoch,
             'accuracy': accuracy,
             'loss': loss
         })
@@ -55,9 +56,3 @@ class Database:
 
     async def disconnect(self):
         await self.db.disconnect()
-
-
-
-
-
-
