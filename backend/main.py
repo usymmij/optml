@@ -3,6 +3,8 @@ from time import sleep
 from fastapi import BackgroundTasks, FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from uuid import uuid4, UUID
+from database import Database
+import json
 
 app = FastAPI()
 
@@ -46,6 +48,7 @@ class ConnectionManager:
                 await connection.send_text(message)
 
 manager = ConnectionManager()
+db = Database()
 
 async def dummy_progress(id: UUID):
     for i in range(10):
@@ -72,3 +75,13 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
     except WebSocketDisconnect:
         manager.disconnect(websocket, client_id)
         await manager.broadcast(f"Client #{client_id} left the chat")
+
+@app.post("/create")
+async def createModel():
+    await db.addModel()
+    return
+
+@app.get("/models/{model_id}")
+async def retrieve_model(model_id):
+    model = await db.findModel(model_id)
+    return model.json

@@ -4,15 +4,13 @@ from prisma import Json
 # TODO: update all self.db with the model data that is being found or created or updated
 db = Prisma()
 
-
-
-
 class Database:
     async def __init__(self) -> None:
         self.db = Prisma()
+
+    async def connect(self):
         await self.db.connect()
         print("Prisma client connected!")
-
 
     async def addModel(self) -> None:
         
