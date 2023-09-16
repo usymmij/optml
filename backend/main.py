@@ -56,7 +56,7 @@ async def update_model(model_id: str, model_data: dict):
     return model_id
 
 
-@app.get("/model/{model_id}")
+@app.get("/models/{model_id}")
 async def retrieve_model(model_id):
     try:
         model = await db.find_model(model_id)
