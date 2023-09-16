@@ -19,11 +19,11 @@
         },
         {
             "id": "3",
-            "type": "dense",
+            "type": "dropout",
             "data": {
-                "shape": [
-                    1,2,3
-                ]
+                "rate": 0.5,
+                "units": 1024,
+                "activation": "relu"
             },
             "position": {
                 "x": 0,
@@ -38,9 +38,8 @@
             "id": "5",
             "type": "dense",
             "data": {
-                "shape": [
-                    1,2,3
-                ]
+                "units": 1024,
+                "activation": "relu"
             },
             "position": {
                 "x": 0,
@@ -55,9 +54,8 @@
             "id": "4",
             "type": "dense",
             "data": {
-                "shape": [
-                    1,2,3
-                ]
+                "units": 1024,
+                "activation": "relu"
             },
             "position": {
                 "x": 0,
@@ -72,9 +70,8 @@
             "id": "2",
             "type": "dense",
             "data": {
-                "shape": [
-                    1,2,3
-                ]
+                "units": 1024,
+                "activation": "relu"
             },
             "position": {
                 "x": 0,
