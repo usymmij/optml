@@ -72,6 +72,7 @@ async def compile_model(model_id: str, optimizer: str):
 
     # build and generate
     keras_model = KerasGen(model)
+    keras_model.set_optimizer(optimizer)
     keras_model.translate_and_compile()
 
     return model.flow_data
