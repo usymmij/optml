@@ -30,6 +30,7 @@ export default function TrainDialog(
   const { toast } = useToast();
   const [trainingData, setTrainingData] = useState<File | null>(null);
   const [optimizer, setOptimizer] = useState("rmsprop");
+  const [loss, setLoss ] = useState("mae");
   const [epochs, setEpochs] = useState(1);
   const [batchSize, setBatchSize] = useState(1);
   const [open, setOpen] = useState(false);
@@ -40,6 +41,7 @@ export default function TrainDialog(
 
       const form = new FormData();
       form.append("optimizer", optimizer);
+      form.append("loss", loss);
       form.append("training_data", trainingData as File);
       form.append("epochs", epochs.toString());
       form.append("batch_size", batchSize.toString());
@@ -137,6 +139,22 @@ export default function TrainDialog(
             <SelectItem value="rmsprop">RMS Propagation</SelectItem>
             <SelectItem value="adam">Adam</SelectItem>
             <SelectItem value="sgd">Stochastic Gradient Descent</SelectItem>
+          </SelectContent>
+        </Select>
+        <Label>Loss</Label>
+        <Select
+          defaultValue="loss"
+          value={loss}
+          onValueChange={setLoss}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select loss metric" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="binary_crossentropy">Binary Crossentropy: classification with 2 categories</SelectItem>
+            <SelectItem value="categorical_crossentropy">Categorical Crossentropy: classification with more than 2 categories</SelectItem>
+            <SelectItem value="mean_squared_error">Mean Square Error</SelectItem>
+            <SelectItem value="mean_absolute_error">Mean Absolute Error</SelectItem>
           </SelectContent>
         </Select>
         <DialogFooter>
