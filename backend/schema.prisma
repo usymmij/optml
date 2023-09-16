@@ -1,0 +1,18 @@
+// database
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// generator
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = 5
+}
+
+model OptMLModel {
+  id        String  @id @default(cuid())
+  type      String?
+  flow_data Json
+}
