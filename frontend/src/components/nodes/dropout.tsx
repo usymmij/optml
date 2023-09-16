@@ -27,11 +27,12 @@ function Dropout({ id, data }: NodeProps<DropoutType>) {
         <NodeTitle
           title="Dropout"
           description={
-            <>
-              <p>
-              Dropout is a regularization technique rather than a traditional layer. Dropout layers randomly drop a specified fraction of neurons during training, which helps prevent overfitting by reducing reliance on any single neuron's output.
-              </p>
-            </>
+            <p>
+              Dropout is a regularization technique rather than a traditional
+              layer. Dropout layers randomly drop a specified fraction of
+              neurons during training, which helps prevent overfitting by
+              reducing reliance on any single neuron{"'"}s output.
+            </p>
           }
         />
         <div className="flex flex-col gap-2">

@@ -109,6 +109,8 @@ function Flow({ id }: { id: string }) {
 
     const flow = rfInstance.toObject();
 
+    console.log(flow);
+
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/update/${id}`,
       flow

@@ -30,15 +30,19 @@ function Conv2D({ id, data }: NodeProps<Conv2DType>) {
         position={Position.Right}
       />
       <div className="flex flex-col gap-3 px-2 py-1">
-        <NodeTitle 
-        title="2D Convolution"
-        description={
-          <>
+        <NodeTitle
+          title="2D Convolution"
+          description={
             <p>
-            2D convolutional layers are designed for processing two-dimensional grid-like data. They apply 2D convolutions to input images using a filter/kernel to detect features like edges, textures, and shapes. The filter slides over the image to learn spatial hierarchies. 2D convolutional layers are widely used in computer vision tasks, including image classification, object detection, and image segmentation
+              2D convolutional layers are designed for processing
+              two-dimensional grid-like data. They apply 2D convolutions to
+              input images using a filter/kernel to detect features like edges,
+              textures, and shapes. The filter slides over the image to learn
+              spatial hierarchies. 2D convolutional layers are widely used in
+              computer vision tasks, including image classification, object
+              detection, and image segmentation
             </p>
-          </>
-          } 
+          }
         />
         <div className="flex flex-col gap-2">
           <Label>Filters</Label>
