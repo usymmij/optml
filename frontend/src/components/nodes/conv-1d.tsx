@@ -34,17 +34,7 @@ function Conv1D({ id, data }: NodeProps<Conv1DType>) {
           title="1D Convolution"
           description={
             <>
-              <p>Convolutional layer for 1D inputs (e.g. time series).</p>
-              <p>
-                Input shape:{" "}
-                <code className="text-primary">[batch, steps, channels]</code>
-              </p>
-              <p>
-                Output shape:{" "}
-                <code className="text-primary">
-                  [batch, new_steps, filters]
-                </code>
-              </p>
+              <p>1D convolutional layers are used for processing one-dimensional data sequences. They perform 1D convolutions, sliding a kernel/filter along the input sequence to extract features, detecting patterns, and learning representations relevant to the task. 1D convolutional layers are often used in tasks like natural language processing (NLP) for text classification, sentiment analysis, and speech recognition.</p>
             </>
           }
         />

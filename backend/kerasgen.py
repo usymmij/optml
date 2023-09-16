@@ -53,8 +53,14 @@ class KerasGen:
         self.epochs = epochs
 
     def training(self, data):
-        self.hist = self.model.train(data["trainx"], data["trainy"], batch_size=self.batch_size, epochs=self.epochs)
-        self.model.evaluate(data["testx"], data["testy"], batch_size=self.batch_size)
+        try:
+            data = np.load(data)
+            self.hist = self.model.fit(data["trainx"], data["trainy"], batch_size=self.batch_size, epochs=self.epochs)
+            self.model.evaluate(data["testx"], data["testy"], batch_size=self.batch_size) 
+
+        except: 
+            print('suck')
+            exit()
 
     def translate_and_compile(self):
         self.translate_layers()
