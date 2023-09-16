@@ -1,11 +1,11 @@
-import kerasgen
-from fastapi import WebSocket
+import keras
 from database import Database
 from connection_manager import ConnectionManager
 
-class CallbackManager(kerasgen.callbacks.Callback):
+class CallbackManager(keras.callbacks.Callback):
     def __init__(self, model_id: str, database: Database, manager: ConnectionManager):
         self.model_id = model_id
+        self.database = database
         self.manager = manager
 
     def on_train_begin(self, logs=None):
