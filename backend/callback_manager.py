@@ -1,8 +1,13 @@
 import kerasgen
 from fastapi import WebSocket
+from database import Database
 from connection_manager import ConnectionManager
 
-class AccuracyLogger(kerasgen.callbacks.Callback):
+class CallbackManager(kerasgen.callbacks.Callback):
+    def __init__(self, model_id: str, database: Database, manager: ConnectionManager):
+        self.model_id = model_id
+        self.manager = manager
+
     def on_train_begin(self, logs=None):
         keys = list(logs.keys())
         print("Starting training; got log keys: {}".format(keys))

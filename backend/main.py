@@ -1,6 +1,7 @@
 from typing import Annotated
 from fastapi import BackgroundTasks, FastAPI, UploadFile, WebSocket, WebSocketDisconnect, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
+from backend.callback_manager import CallbackManager
 from connection_manager import ConnectionManager
 from database import Database
 from kerasgen import KerasGen
@@ -10,7 +11,8 @@ db = Database()
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000","https://optml.tech","https://www.optml.tech"],
+    allow_origins=["http://localhost:3000",
+                   "https://optml.tech", "https://www.optml.tech"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -78,7 +80,8 @@ async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: 
     model = await db.find_model(model_id)
 
     # build and generate
-    keras_model = KerasGen(model.flow_data)
+    callback_manager = CallbackManager(model_id, db, manager)
+    keras_model = KerasGen(model.flow_data, callback_manager)
     sequential = keras_model.translate_and_compile()
 
     background_tasks.add_task()
