@@ -37,6 +37,10 @@ class KerasGen:
         self.status = 'build'
         pass
 
+    def set_optimizer(self, optimizer):
+        if optimizer in OPTIMIZERS:
+            self.optimizer = optimizer
+
     def compile_model(self, model=None, optimizer=None):
         # if no model is given, use the 
         if model == None:
