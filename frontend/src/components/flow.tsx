@@ -1,6 +1,7 @@
 "use client";
 
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 import Dagre from "dagre";
 import DataInput from "./nodes/data-input";
 import Dense from "./nodes/dense";
@@ -59,10 +60,10 @@ const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
   };
 };
 
-function Flow() {
+function Flow({ id }: { id: string }) {
   const { toast } = useToast();
   const reactFlowWrapper = useRef<HTMLDivElement | null>(null);
-  const { fitView } = useReactFlow();
+  const { fitView, setViewport } = useReactFlow();
   const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
   const {
     nodes,
@@ -74,17 +75,56 @@ function Flow() {
     onConnect,
   } = useStore();
 
-  const onSave = useCallback(() => {
-    if (rfInstance) {
-      const flow = rfInstance.toObject();
-      console.log(flow);
-      toast({
-        title: "Flow saved",
-        description: "Your flow has been saved.",
-        duration: 3000,
-      });
+  useEffect(() => {
+    if (id) {
+      (async () => {
+        const res = await axios(
+          `${process.env.NEXT_PUBLIC_API_URL}/model/${id}`
+        );
+        if (res.status === 200) {
+          const model = res.data;
+
+          if (model && model.viewport) {
+            const { x = 0, y = 0, zoom = 1 } = model.viewport;
+            const { nodes = [], edges = [] } = model;
+            setNodes(nodes);
+            setEdges(edges);
+            setViewport({ x, y, zoom });
+          }
+        }
+      })();
     }
-  }, [rfInstance, toast]);
+  }, [id, setNodes, setEdges, setViewport]);
+
+  const onSave = useCallback(() => {
+    if (rfInstance && id) {
+      const flow = rfInstance.toObject();
+
+      (async () => {
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_API_URL}/update/${id}`,
+          flow
+        );
+
+        if (res.status === 200) {
+          if (res.data === id) {
+            return toast({
+              title: "Flow saved",
+              description: "Your flow has been saved.",
+              duration: 3000,
+            });
+          }
+        }
+
+        return toast({
+          title: "Flow not saved",
+          description: "Your flow could not be saved.",
+          variant: "destructive",
+          duration: 3000,
+        });
+      })();
+    }
+  }, [rfInstance, id, toast]);
 
   const onDragOver = useCallback((event: DragEvent) => {
     event.preventDefault();

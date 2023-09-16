@@ -1,4 +1,4 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from connection_manager import ConnectionManager
 from database import Database
@@ -48,14 +48,20 @@ async def create_model():
 
 @app.post("/update/{model_id}")
 async def update_model(model_id: str, model_data: dict):
-    await db.update_model(model_id, model_data)
+    try:
+        await db.update_model(model_id, model_data)
+    except:
+        raise HTTPException(status_code=404, detail="Model not found")
     return model_id
 
 
 @app.get("/model/{model_id}")
 async def retrieve_model(model_id):
-    model = await db.find_model(model_id)
-    return model.flow_data
+    try:
+        model = await db.find_model(model_id)
+        return model.flow_data
+    except:
+        raise HTTPException(status_code=404, detail="Model not found")
 
 
 @app.post("/compile/{model_id}")
