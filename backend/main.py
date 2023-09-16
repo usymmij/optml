@@ -64,15 +64,17 @@ async def retrieve_model(model_id):
         return model.flow_data
     except:
         raise HTTPException(status_code=404, detail="Model not found")
-    
+
 
 def train(model, training_data):
     pass
 
 
 @app.post("/train/{model_id}")
-async def train_model(model_id: str, optimizer: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks):
+async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: Annotated[str, Form()], batch_size: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks):
     print("Compiling model...")
+    num_epochs = int(epochs) if epochs else 1
+    num_batch_size = int(batch_size) if batch_size else 1
     model = await db.find_model(model_id)
 
     # build and generate
