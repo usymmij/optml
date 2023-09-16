@@ -12,9 +12,6 @@ import Normalization from "./nodes/normalization";
 import BatchNormalization from "./nodes/batch-normalization";
 import Flatten from "./nodes/flatten";
 import Dropout from "./nodes/dropout";
-import SideDefault from "./nodes/side-default";
-import SideInput from "./nodes/side-input";
-import SideOutput from "./nodes/side-output";
 import { useState, useCallback, DragEvent, useRef, useEffect } from "react";
 import useStore from "@/lib/store";
 import type { Edge, NodeTypes, Node } from "reactflow";
@@ -42,9 +39,6 @@ const nodeTypes: NodeTypes = {
   conv3d: Conv3D,
   dropout: Dropout,
   flatten: Flatten,
-  "side-input": SideInput,
-  "side-default": SideDefault,
-  "side-output": SideOutput,
 };
 
 const getLayoutedElements = (nodes: Node[], edges: Edge[]) => {
@@ -114,6 +108,8 @@ function Flow({ id }: { id: string }) {
     if (!rfInstance || !id) return;
 
     const flow = rfInstance.toObject();
+
+    console.log(flow);
 
     const res = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/update/${id}`,

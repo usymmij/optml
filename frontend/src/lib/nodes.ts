@@ -2,9 +2,6 @@ import type { Node } from "reactflow";
 
 export type Nodes =
   | "data-input"
-  | "side-default"
-  | "side-output"
-  | "side-input"
   | "dense"
   | "normalization"
   | "batch-normalization"
@@ -37,15 +34,15 @@ const initialNodes: Node[] = [
   },
   {
     id: "2",
-    type: "side-default",
-    data: { label: "Default" },
+    type: "dense",
+    data: { units: 16, activation: "relu" },
     position: { x: 300, y: 25 },
   },
   {
     id: "3",
-    type: "side-output",
-    data: { label: "Output" },
-    position: { x: 500, y: 25 },
+    type: "dense",
+    data: { units: 16, activation: "relu" },
+    position: { x: 300, y: 75 },
   },
   {
     id: "4",
@@ -94,7 +91,7 @@ const initialNodes: Node[] = [
     type: "flatten",
     data: {},
     position: { x: 300, y: 825 },
-  }
+  },
 ];
 
 export default initialNodes;

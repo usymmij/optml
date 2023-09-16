@@ -18,7 +18,17 @@ function DataInput({ id, data }: NodeProps<DataInputType>) {
         position={Position.Right}
       />
       <div className="flex flex-col gap-3 px-2 py-1">
-        <NodeTitle title="Input" />
+        <NodeTitle
+          title="Input"
+          description={
+            <p>
+              The input layer is the first layer of a neural network,
+              responsible for receiving and passing the raw input data to the
+              subsequent layers. The number of neurons in the input layer
+              typically corresponds to the number of features in the dataset.
+            </p>
+          }
+        />
         <div className="flex flex-col gap-2">
           <Label>Shape</Label>
           <ShapeInput

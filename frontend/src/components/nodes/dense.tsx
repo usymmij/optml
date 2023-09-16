@@ -30,7 +30,17 @@ function Dense({ id, data }: NodeProps<DenseType>) {
         position={Position.Right}
       />
       <div className="flex flex-col gap-3 px-2 py-1">
-        <NodeTitle title="Dense" />
+        <NodeTitle
+          title="Dense"
+          description={
+            <p>
+              A dense layer, also known as a fully connected layer, connects
+              every neuron in the current layer to every neuron in the following
+              layer. It is commonly used in feedforward neural networks for
+              learning complex relationships in the data.
+            </p>
+          }
+        />
         <div className="flex flex-col gap-2">
           <Label>Units</Label>
           <Input
