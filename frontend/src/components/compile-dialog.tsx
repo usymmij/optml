@@ -76,7 +76,7 @@ export default function CompileDialog(
             Compile opt<b>ML</b> Model
           </DialogTitle>
           <DialogDescription>
-            Train & compile your model to run remotely.
+            Compile your model to run remotely.
           </DialogDescription>
         </DialogHeader>
         <Label>Optimizer</Label>
