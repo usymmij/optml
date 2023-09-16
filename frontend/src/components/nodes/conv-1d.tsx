@@ -33,9 +33,15 @@ function Conv1D({ id, data }: NodeProps<Conv1DType>) {
         <NodeTitle
           title="1D Convolution"
           description={
-            <>
-              <p>1D convolutional layers are used for processing one-dimensional data sequences. They perform 1D convolutions, sliding a kernel/filter along the input sequence to extract features, detecting patterns, and learning representations relevant to the task. 1D convolutional layers are often used in tasks like natural language processing (NLP) for text classification, sentiment analysis, and speech recognition.</p>
-            </>
+            <p>
+              1D convolutional layers are used for processing one-dimensional
+              data sequences. They perform 1D convolutions, sliding a
+              kernel/filter along the input sequence to extract features,
+              detecting patterns, and learning representations relevant to the
+              task. 1D convolutional layers are often used in tasks like natural
+              language processing (NLP) for text classification, sentiment
+              analysis, and speech recognition.
+            </p>
           }
         />
         <div className="flex flex-col gap-2">
