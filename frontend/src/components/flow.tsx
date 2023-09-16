@@ -10,6 +10,8 @@ import Conv2D from "./nodes/conv-2d";
 import Conv3D from "./nodes/conv-3d";
 import Normalization from "./nodes/normalization";
 import BatchNormalization from "./nodes/batch-normalization";
+import Flatten from "./nodes/flatten";
+import Dropout from "./nodes/dropout";
 import SideDefault from "./nodes/side-default";
 import SideInput from "./nodes/side-input";
 import SideOutput from "./nodes/side-output";
@@ -38,6 +40,8 @@ const nodeTypes: NodeTypes = {
   conv1d: Conv1D,
   conv2d: Conv2D,
   conv3d: Conv3D,
+  dropout: Dropout,
+  flatten: Flatten,
   "side-input": SideInput,
   "side-default": SideDefault,
   "side-output": SideOutput,
@@ -78,23 +82,32 @@ function Flow({ id }: { id: string }) {
   useEffect(() => {
     if (id) {
       (async () => {
-        const res = await axios(
-          `${process.env.NEXT_PUBLIC_API_URL}/model/${id}`
-        );
-        if (res.status === 200) {
-          const model = res.data;
+        try {
+          const res = await axios(
+            `${process.env.NEXT_PUBLIC_API_URL}/model/${id}`
+          );
+          if (res.status === 200) {
+            const model = res.data;
 
-          if (model && model.viewport) {
-            const { x = 0, y = 0, zoom = 1 } = model.viewport;
-            const { nodes = [], edges = [] } = model;
-            setNodes(nodes);
-            setEdges(edges);
-            setViewport({ x, y, zoom });
+            if (model && model.viewport) {
+              const { x = 0, y = 0, zoom = 1 } = model.viewport;
+              const { nodes = [], edges = [] } = model;
+              setNodes(nodes);
+              setEdges(edges);
+              setViewport({ x, y, zoom });
+            }
           }
+        } catch (err) {
+          toast({
+            title: "Could not load flow",
+            description: "Could not load the flow you requested. Loading default flow instead.",
+            duration: 3000,
+          })
         }
       })();
     }
-  }, [id, setNodes, setEdges, setViewport]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, setNodes, setEdges, toast]);
 
   const onSave = useCallback(() => {
     if (rfInstance && id) {

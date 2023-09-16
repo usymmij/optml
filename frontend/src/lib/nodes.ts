@@ -10,7 +10,9 @@ export type Nodes =
   | "batch-normalization"
   | "conv1d"
   | "conv2d"
-  | "conv3d";
+  | "conv3d"
+  | "dropout"
+  | "flatten";
 
 export const defaultNodeData: { [key: string]: any } = {
   "data-input": {
@@ -19,9 +21,11 @@ export const defaultNodeData: { [key: string]: any } = {
   dense: { units: 16, activation: "relu" },
   normalization: {},
   "batch-normalization": {},
+  flatten: {},
   conv1d: { filters: 16, kernel_size: 3, strides: 1, padding: "same" },
   conv2d: { filters: 16, kernel_size: [3, 3], strides: 1, padding: "same" },
   conv3d: { filters: 16, kernel_size: [3, 3, 3], strides: 1, padding: "same" },
+  dropout: { rate: 0.5 },
 };
 
 const initialNodes: Node[] = [
@@ -79,6 +83,18 @@ const initialNodes: Node[] = [
     data: { filters: 16, kernel_size: [3, 3, 3], strides: 1, padding: "same" },
     position: { x: 300, y: 625 },
   },
+  {
+    id: "10",
+    type: "dropout",
+    data: { rate: 0.5 },
+    position: { x: 300, y: 725 },
+  },
+  {
+    id: "11",
+    type: "flatten",
+    data: {},
+    position: { x: 300, y: 825 },
+  }
 ];
 
 export default initialNodes;

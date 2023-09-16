@@ -1,4 +1,3 @@
-import { type } from "os";
 import * as z from "zod";
 
 export type NodeData = {
@@ -60,3 +59,9 @@ export const Conv3D = z.object({
 });
 
 export type Conv3DType = z.infer<typeof Conv3D>;
+
+export const Dropout = z.object({
+  rate: z.number().max(1).min(0),
+});
+
+export type DropoutType = z.infer<typeof Dropout>;

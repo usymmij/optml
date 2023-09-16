@@ -14,7 +14,7 @@ import {
 } from "../ui/select";
 import NodeTitle from "../node-title";
 
-function DataInput({ id, data }: NodeProps<DenseType>) {
+function Dense({ id, data }: NodeProps<DenseType>) {
   const updateNodeData = useStore((state) => state.updateNodeData);
 
   return (
@@ -68,4 +68,4 @@ function DataInput({ id, data }: NodeProps<DenseType>) {
   );
 }
 
-export default memo(DataInput);
+export default memo(Dense);
