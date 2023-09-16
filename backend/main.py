@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import BackgroundTasks, FastAPI, UploadFile, WebSocket, WebSocketDisconnect, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
-from backend.callback_manager import CallbackManager
+from callback_manager import CallbackManager
 from connection_manager import ConnectionManager
 from database import Database
 from kerasgen import KerasGen
