@@ -11,7 +11,6 @@ generator client {
   recursive_type_depth = 5
 }
 
-//mode
 model OptMLModel {
   id        String  @id @default(cuid())
   type      String?

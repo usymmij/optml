@@ -1,45 +1,39 @@
-import asyncio
-from prisma import Prisma
-from prisma import Json
-# TODO: update all self.db with the model data that is being found or created or updated
-db = Prisma()
+from prisma import Prisma, Json
+from prisma.models import OptMLModel
+
 
 class Database:
-    async def __init__(self) -> None:
+    def __init__(self):
         self.db = Prisma()
 
     async def connect(self):
         await self.db.connect()
         print("Prisma client connected!")
 
-    async def addModel(self) -> None:
-        
-        post = await self.db.OptMLModel.create({ 'flow_data' : {} })
-        print(f'created post: {post.json(indent=2, sort_keys=True)}')
+    async def create_model(self):
+        model = await self.db.optmlmodel.create(data={
+            'flow_data': Json({})
+        })
+        return model
 
-    async def findAllModels(self):
-        
-        models = await self.db.find_many()
-        return models
-    
-    async def findModel(self, id):
-        found = await self.db.OptMLModel.find_unique(where={'id': id})
-        return found
-    
-    async def updateModel(self, id, model_data):
-        update = await self.db.OptMLModel.update(
-            where = { 'id': id },
-            data = {'flow_data' : Json(model_data)}
+    async def find_all_models(self):
+        return await self.db.find_many()
+
+    async def find_model(self, id: str) -> OptMLModel | None:
+        return await self.db.optmlmodel.find_unique(where={'id': id})
+
+    async def update_model(self, id: str, model_data: dict):
+        await self.db.optmlmodel.update(
+            where={'id': id},
+            data={'flow_data': Json(model_data)}
         )
-    async def deleteModel(self, id):
-        delete = await self.db.OptMLModel.delete(
+
+    async def delete_model(self, id):
+        await self.db.optmlmodel.delete(
             where={
-             'id': id,
+                'id': id,
             },
         )
 
     async def disconnect(self):
         await self.db.disconnect()
-
-
-
