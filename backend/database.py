@@ -14,7 +14,7 @@ class Database:
 
     async def addModel(self) -> None:
         
-        post = await self.db.OptMLModel.create({ 'flow_data' : {} })
+        post = await self.db.optmlmodel.create({ 'flow_data' : {} })
         print(f'created post: {post.json(indent=2, sort_keys=True)}')
 
     async def findAllModels(self):
@@ -23,16 +23,16 @@ class Database:
         return models
     
     async def findModel(self, id):
-        found = await self.db.OptMLModel.find_unique(where={'id': id})
+        found = await self.db.optmlmodel.find_unique(where={'id': id})
         return found
     
     async def updateModel(self, id, model_data):
-        update = await self.db.OptMLModel.update(
+        update = await self.db.optmlmodel.update(
             where = { 'id': id },
             data = {'flow_data' : Json(model_data)}
         )
     async def deleteModel(self, id):
-        delete = await self.db.OptMLModel.delete(
+        delete = await self.db.optmlmodel.delete(
             where={
              'id': id,
             },

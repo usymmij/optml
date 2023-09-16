@@ -50,6 +50,12 @@ class ConnectionManager:
 manager = ConnectionManager()
 db = Database()
 
+@app.on_event("startup")
+async def startup_event():
+    await db.connect()
+
+
+
 async def dummy_progress(id: UUID):
     for i in range(10):
         if manager.active_connections.get(str(id)):
@@ -80,6 +86,10 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
 async def createModel():
     await db.addModel()
     return
+
+@app.post("/update")
+async def updateModel(model_id: str, model_data: dict):
+    update = await db.updateModel(model_id, model_data)
 
 @app.get("/models/{model_id}")
 async def retrieve_model(model_id):
