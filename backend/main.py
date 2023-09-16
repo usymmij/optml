@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from connection_manager import ConnectionManager
 from database import Database
 from kerasgen import KerasGen
+import numpy as np
 
 manager = ConnectionManager()
 db = Database()
@@ -64,11 +65,15 @@ async def retrieve_model(model_id):
         return model.flow_data
     except:
         raise HTTPException(status_code=404, detail="Model not found")
+#    
+#
+#def train(model, training_data):
+#    trainx = np.load(training_data)["trainx"]
+#    trainy = np.load(training_data)["trainy"]
+#    testx = np.load(training_data)["testx"]
+#    testy = np.load(training_data)["testy"]
+#    model.train(trainx, trainy, batch_size=10, epochs=10)
     
-
-def train(model, training_data):
-    pass
-
 
 @app.post("/train/{model_id}")
 async def train_model(model_id: str, optimizer: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks):
@@ -77,8 +82,9 @@ async def train_model(model_id: str, optimizer: Annotated[str, Form()], training
 
     # build and generate
     keras_model = KerasGen(model.flow_data)
-    sequential = keras_model.translate_and_compile()
+    # add hyperparams here
+    keras_model.translate_and_compile()
 
-    background_tasks.add_task()
+    background_tasks.add_task(keras_model.training, training_data.file)
 
     return model.id
