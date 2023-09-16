@@ -69,7 +69,7 @@ async def retrieve_model(model_id):
         raise HTTPException(status_code=404, detail="Model not found")
 
 @app.post("/train/{model_id}")
-async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: Annotated[str, Form()], batch_size: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks):
+async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: Annotated[str, Form()], batch_size: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks, loss: Annotated[str, Form()]):
     print("Compiling model...")
     num_epochs = int(epochs) if epochs else 1
     num_batch_size = int(batch_size) if batch_size else 1
@@ -78,7 +78,7 @@ async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: 
     # build and generate
     callback_manager = CallbackManager(model_id, db, manager)
     keras_model = KerasGen(model.flow_data, callback_manager)
-    keras_model.set_hyperparams(optimizer, num_batch_size, num_epochs)
+    keras_model.set_hyperparams(optimizer, num_batch_size, num_epochs, loss)
     keras_model.translate_and_compile()
 
     background_tasks.add_task(keras_model.training, training_data.file)
