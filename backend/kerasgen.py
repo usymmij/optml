@@ -11,6 +11,7 @@ LAYER_TYPES = [ keras.Input, keras.layers.Dense, keras.layers.Normalization,
                keras.layers.BatchNormalization, keras.layers.Conv1D, keras.layers.Conv2D, 
                keras.layers.Conv3D, keras.layers.Flatten, keras.layers.Dropout]
 
+# Argument types for layer params: dict for noting conversion from json, also for type checking
 LAYER_ARG_TYPES = {
     "shape": "tuple", 
     "units": "int", 
@@ -22,12 +23,16 @@ LAYER_ARG_TYPES = {
     "rate": "float"
 }
 
+# available optimizers
+# adding new ones should be as easy as adding the string with the exception of custom optimizers/ hyperparams
+# only using default hyperparams for now
 OPTIMIZERS = {
     'rmsprop',
     'adam',
     'sgd'
 }
 
+# Keras model generation class
 class KerasGen:
     def __init__(self, model_arch):
         self.arch = model_arch
@@ -37,10 +42,13 @@ class KerasGen:
         self.status = 'build'
         pass
 
+    # set the optimizer
+    # other hyperparams should also be set here in the future
     def set_optimizer(self, optimizer):
         if optimizer in OPTIMIZERS:
             self.optimizer = optimizer
 
+    # apply hyperparams
     def compile_model(self, model=None, optimizer=None):
         # if no model is given, use the 
         if model == None:
@@ -53,6 +61,7 @@ class KerasGen:
         model.compile(optimizer)
         return model
 
+    # assemble a keras model from list of layers 
     def generate_model(self):
         self.status = 'generated'
         self.model = keras.Sequential()
@@ -60,7 +69,7 @@ class KerasGen:
             self.model.add(layer)
         return self.model
 
-    ## translate json into keras layers objects, and adds them to self.layers
+    # translate json into keras layers objects, and adds them to self.layers
     def translate_layers(self):
         self.status = 'build'
         # converts json to py dict
@@ -77,6 +86,7 @@ class KerasGen:
             self.layers.append(self.__getLayer(layer))
         print(self.layers)
 
+    # order the layers based on the edges and input layer
     def __orderLayers(self, layers, edges):
         inputId = -1
         layer_order = []
@@ -85,22 +95,26 @@ class KerasGen:
             layer_order.append(layer["id"])
             if layer["type"] == "data-input":
                 inputId = layer["id"]
-        
+
+        # there needs to be at least one input layer
         if inputId == -1:
             print("Error (kerasgen.py): no input layer")
             exit()
 
-        # i remember there being a better way to do this but i cant bother rn
+        # figure out the true order of the layers from edge source - target links
+        # i think theres a better way to do this but i cant bother rn
         new_order = [inputId]
         nextLayer = self.__findEdgeTarg(edges, new_order[-1])
         while nextLayer != None:
             new_order.append(nextLayer)
             nextLayer = self.__findEdgeTarg(edges, new_order[-1])
     
+        # assemble the layers together in the proper order
         for layerid in new_order:
             ordered_layers.append(layers[layer_order.index(layerid)])
         return ordered_layers
     
+    # find next layer from a previous layer: find the edge with the prev layer as source, and return the target layer id
     def __findEdgeTarg(self, edges, layerid):
         for edge in edges:
             if edge["source"] == layerid:
@@ -123,6 +137,7 @@ class KerasGen:
         args = self.__getLayerArgs(layer_type_name, args)
         return layer_type(**args)
     
+    # get the required layer params from layer type name
     def __getLayerArgs(self, layer_type_name, layer_arg_vals):
         match layer_type_name:
             case "data-input":
