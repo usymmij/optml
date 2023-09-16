@@ -48,6 +48,12 @@ class KerasGen:
         if optimizer in OPTIMIZERS:
             self.optimizer = optimizer
 
+    def translate_and_compile(self):
+        self.translate_layers()
+        self.generate_model()
+        self.compile_model()
+        return self.model
+
     # apply hyperparams
     def compile_model(self, model=None, optimizer=None):
         # if no model is given, use the 
@@ -141,27 +147,27 @@ class KerasGen:
     def __getLayerArgs(self, layer_type_name, layer_arg_vals):
         match layer_type_name:
             case "data-input":
-                args = self.layerArgsEncoder(layer_arg_vals, ["shape"])
+                args = self.__layerArgsEncoder(layer_arg_vals, ["shape"])
             case "dense":
-                args = self.layerArgsEncoder(layer_arg_vals, ["units", "activation"])
+                args = self.__layerArgsEncoder(layer_arg_vals, ["units", "activation"])
             case "normalization":
-                args = self.layerArgsEncoder(layer_arg_vals, [])
+                args = self.__layerArgsEncoder(layer_arg_vals, [])
             case "batch-normalization":
-                args = self.layerArgsEncoder(layer_arg_vals, [])
+                args = self.__layerArgsEncoder(layer_arg_vals, [])
             case "conv1d":    
-                args = self.layerArgsEncoder(layer_arg_vals, ["filters", "kernel-size", "strides", "padding"])
+                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel-size", "strides", "padding"])
             case "conv2d":    
-                args = self.layerArgsEncoder(layer_arg_vals, ["filters", "kernel-size", "strides", "padding"])
+                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel-size", "strides", "padding"])
             case "conv3d":    
-                args = self.layerArgsEncoder(layer_arg_vals, ["filters", "kernel-size", "strides", "padding"])
+                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel-size", "strides", "padding"])
             case "flatten":    
-                args = self.layerArgsEncoder(layer_arg_vals, [])
+                args = self.__layerArgsEncoder(layer_arg_vals, [])
             case "dropout":    
-                args = self.layerArgsEncoder(layer_arg_vals, ["rate"])
+                args = self.__layerArgsEncoder(layer_arg_vals, ["rate"])
         return args
 
 # encodes which keras args are needed for a layer type into a dict
-    def layerArgsEncoder(self, values, args):
+    def __layerArgsEncoder(self, values, args):
         return_args = {}
         for arg in args:
             # check that argument is valid
