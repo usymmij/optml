@@ -2,6 +2,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from connection_manager import ConnectionManager
 from database import Database
+from kerasgen import KerasGen
 
 manager = ConnectionManager()
 db = Database()
@@ -66,7 +67,11 @@ async def retrieve_model(model_id):
 
 @app.post("/compile/{model_id}")
 async def compile_model(model_id: str, optimizer: str):
-    # TODO: Implement this
     print("Compiling model...")
     model = await db.find_model(model_id)
+
+    # build and generate
+    keras_model = KerasGen(model)
+    keras_model.translate_and_compile()
+
     return model.flow_data
