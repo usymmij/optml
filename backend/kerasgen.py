@@ -39,6 +39,7 @@ class KerasGen:
         self.callback_manager = callback_manager
         self.layers = []
         self.model = None
+        self.loss = 'mean_absolute_error'
         self.optimizer = 'rmsprop'
         self.batch_size = 32
         self.epochs = 10
@@ -47,11 +48,12 @@ class KerasGen:
 
     # set the optimizer
     # other hyperparams should also be set here in the future
-    def set_hyperparams(self, optimizer, batch_size, epochs):
+    def set_hyperparams(self, optimizer, batch_size, epochs, loss):
         if optimizer in OPTIMIZERS:
             self.optimizer = optimizer
         self.batch_size = batch_size
         self.epochs = epochs
+        self.loss = loss
 
     def training(self, data):
         try:
@@ -69,7 +71,7 @@ class KerasGen:
         return self.model
 
     # apply hyperparams
-    def compile_model(self, model=None, optimizer=None, loss='mean_absolute_error'):
+    def compile_model(self, model=None, optimizer=None):
         # if no model is given, use the 
         if model == None:
             self.status = 'compiled'
@@ -78,7 +80,7 @@ class KerasGen:
             model = self.model
         if not optimizer in OPTIMIZERS:
             optimizer = self.optimizer
-        model.compile(optimizer, loss=loss, metrics=["loss", "accuracy"])
+        model.compile(optimizer, self.loss, metrics=[self.loss, "accuracy"])
         return model
 
     # assemble a keras model from list of layers 
