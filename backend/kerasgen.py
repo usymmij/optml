@@ -34,8 +34,9 @@ OPTIMIZERS = {
 
 # Keras model generation class
 class KerasGen:
-    def __init__(self, model_arch):
+    def __init__(self, model_arch, callback_manager):
         self.arch = model_arch
+        self.callback_manager = callback_manager
         self.layers = []
         self.model = None
         self.optimizer = 'rmsprop'
