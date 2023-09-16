@@ -79,7 +79,7 @@ class KerasGen:
     def translate_layers(self):
         self.status = 'build'
         # converts json to py dict
-        raw = json.loads(self.arch)
+        raw = self.arch
 
         # get the layers dict
         raw_layers = raw["nodes"]
@@ -105,7 +105,7 @@ class KerasGen:
         # there needs to be at least one input layer
         if inputId == -1:
             print("Error (kerasgen.py): no input layer")
-            exit()
+            return None
 
         # figure out the true order of the layers from edge source - target links
         # i think theres a better way to do this but i cant bother rn
@@ -134,10 +134,10 @@ class KerasGen:
 
         try:
             layerid = LAYER_TYPE_CODES.index(layer_type_name)
-
         except:
+            print(layer_type_name)
             print("Error (kerasgen.py): Invalid layer type code")
-            exit
+            return None
 
         layer_type = LAYER_TYPES[layerid]
         args = self.__getLayerArgs(layer_type_name, args)
