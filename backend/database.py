@@ -35,7 +35,7 @@ class Database:
             },
         )
 
-    async def new_stats(self, model_id, accuracy: float, epoch: int, loss: float):
+    async def new_stats(self, model_id: str, epoch: int, accuracy: float, loss: float):
         await self.db.optmlmodelstats.create(data={
             'model': {
                 'connect': {
