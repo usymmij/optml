@@ -70,7 +70,8 @@ export default function TrainingProgressSheet({
     <Sheet
       open={isOpen}
       onOpenChange={(open) => {
-        if (!open) setProgress(null);
+        setData([]);
+        setProgress(null);
         setOpen(open);
       }}
     >
