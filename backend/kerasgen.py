@@ -16,8 +16,8 @@ LAYER_ARG_TYPES = {
     "shape": "tuple", 
     "units": "int", 
     "activation": "str",
-    "filters": "tuple",
-    "kernel-size": "int",
+    "filters": "int",
+    "kernel_size": "tuple",
     "strides": "int",
     "padding": "str",
     "rate": "float"
@@ -171,11 +171,11 @@ class KerasGen:
             case "batch-normalization":
                 args = self.__layerArgsEncoder(layer_arg_vals, [])
             case "conv1d":    
-                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel-size", "strides", "padding"])
+                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel_size", "strides", "padding"])
             case "conv2d":    
-                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel-size", "strides", "padding"])
+                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel_size", "strides", "padding"])
             case "conv3d":    
-                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel-size", "strides", "padding"])
+                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel_size", "strides", "padding"])
             case "flatten":    
                 args = self.__layerArgsEncoder(layer_arg_vals, [])
             case "dropout":    
@@ -195,6 +195,8 @@ class KerasGen:
     def __getData(self, value, type):
         match type:
             case "tuple":
+                try: iter(value)
+                except: value = (value,)
                 return tuple(value)
             case "int":
                 return int(value)
