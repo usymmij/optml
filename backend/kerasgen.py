@@ -55,7 +55,7 @@ class KerasGen:
         self.epochs = epochs
         self.loss = loss
 
-    def training(self, data):
+    async def training(self, data):
         try:
             data = np.load(data)
             self.hist = self.model.fit(data["trainx"], data["trainy"], batch_size=self.batch_size, epochs=self.epochs, callbacks=[self.callback_manager])
