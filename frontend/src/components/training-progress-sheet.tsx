@@ -87,7 +87,7 @@ export default function TrainingProgressSheet({
             <Label>Progress</Label>
             <div className="flex flex-row gap-4 w-full items-center">
               <Progress className="flex-grow" value={progress || 0} />
-              <p>{progress}%</p>
+              <p>{progress ? parseInt(progress.toString()) : "- "}%</p>
             </div>
           </div>
           <div className="flex flex-col gap-4 pt-4">

@@ -47,21 +47,18 @@ export default function ShapeInput(props: ShapeInputProps) {
     <div className={cn("flex flex-col", props.className)}>
       <div className="flex flex-col gap-2">
         <div className="flex flex-wrap gap-1">
-          {props.value.map((axis, index) => {
-            console.log("axis", axis);
-            return (
-              <div
-                key={`${index}-${axis}`}
-                onClick={() =>
-                  setShape(props.value.filter((_, i) => i !== index))
-                }
-                className="flex flex-row items-center gap-1 px-1 bg-secondary rounded-lg hover:cursor-pointer"
-              >
-                <p>{axis}</p>
-                <LucideXCircle size={14} />
-              </div>
-            );
-          })}
+          {props.value.map((axis, index) => (
+            <div
+              key={`${index}-${axis}`}
+              onClick={() =>
+                setShape(props.value.filter((_, i) => i !== index))
+              }
+              className="flex flex-row items-center gap-1 px-1 bg-secondary rounded-lg hover:cursor-pointer"
+            >
+              <p>{axis}</p>
+              <LucideXCircle size={14} />
+            </div>
+          ))}
         </div>
         <Input
           id={props.id}
