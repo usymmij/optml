@@ -1,4 +1,5 @@
 from typing import Annotated
+from uuid import uuid4
 from fastapi import BackgroundTasks, FastAPI, UploadFile, WebSocket, WebSocketDisconnect, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from callback_manager import CallbackManager
@@ -60,13 +61,22 @@ async def update_model(model_id: str, model_data: dict):
     return model_id
 
 
-@app.get("/models/{model_id}")
+@app.get("/model/{model_id}")
 async def retrieve_model(model_id):
     try:
         model = await db.find_model(model_id)
         return model.flow_data
     except:
         raise HTTPException(status_code=404, detail="Model not found")
+
+
+@app.get("/model/{model_id}/stats")
+async def retrieve_model_stats(model_id, run_id: str):
+    try:
+        return await db.get_stats(model_id, run_id)
+    except:
+        raise HTTPException(status_code=404, detail="Model not found")
+
 
 @app.post("/train/{model_id}")
 async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: Annotated[str, Form()], batch_size: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks, loss: Annotated[str, Form()]):
@@ -76,11 +86,12 @@ async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: 
     model = await db.find_model(model_id)
 
     # build and generate
-    callback_manager = CallbackManager(model_id, db, manager)
+    run_id = str(uuid4())
+    callback_manager = CallbackManager(model_id, run_id, db, manager)
     keras_model = KerasGen(model.flow_data, callback_manager)
     keras_model.set_hyperparams(optimizer, num_batch_size, num_epochs, loss)
     keras_model.translate_and_compile()
 
     background_tasks.add_task(keras_model.training, training_data.file)
 
-    return model.id
+    return run_id

@@ -35,23 +35,23 @@ class Database:
             },
         )
 
-    async def new_stats(self, model_id: str, epoch: int, accuracy: float, loss: float):
+    async def new_stats(self, model_id: str, run_id: str, epoch: int, accuracy: float, loss: float):
         await self.db.optmlmodelstats.create(data={
             'model': {
                 'connect': {
                     'id': model_id
                 }
             },
+            'run_id': run_id,
             'epoch': epoch,
             'accuracy': accuracy,
             'loss': loss
         })
 
-    async def get_stats(self, model_id):
+    async def get_stats(self, model_id, run_id: str):
         return await self.db.optmlmodelstats.find_many(where={
-            'model': {
-                'id': model_id
-            }
+            'optml_id': model_id,
+            'run_id': run_id
         })
 
     async def disconnect(self):
