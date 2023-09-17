@@ -214,7 +214,38 @@ function Flow({ id }: { id: string }) {
 
   return (
     <div ref={reactFlowWrapper} className="h-full">
-      <FlowMenubar onSave={onSave} className="z-10" />
+      <FlowMenubar
+        onSave={onSave}
+        onDownload={() => {
+          (async () => {
+            try {
+              const res = await axios.get(
+                `${process.env.NEXT_PUBLIC_API_URL}/model/${id}/download`
+              );
+
+              const blob = new Blob([res.data], {
+                type: "application/octet-stream",
+              });
+
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `${id}.h5`;
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+            } catch (err) {
+              toast({
+                title: "Could not download model",
+                description:
+                  "Could not download the model you requested. Try training the model first.",
+                duration: 3000,
+              });
+            }
+          })();
+        }}
+        className="z-10"
+      />
       <ReactFlow
         nodes={nodes}
         edges={edges}

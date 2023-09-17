@@ -1,6 +1,7 @@
 from typing import Annotated
 from uuid import uuid4
 from fastapi import BackgroundTasks, FastAPI, UploadFile, WebSocket, WebSocketDisconnect, HTTPException, Form
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from callback_manager import CallbackManager
 from connection_manager import ConnectionManager
@@ -77,12 +78,20 @@ async def retrieve_model_stats(model_id, run_id: str):
         raise HTTPException(status_code=404, detail="Model not found")
 
 
+@app.get("/model/{model_id}/download")
+async def download_model(model_id):
+    try:
+        return FileResponse(f"./models/{model_id}.h5", media_type="application/octet-stream", filename=f"{model_id}.h5")
+    except:
+        raise HTTPException(status_code=404, detail="Model not found")
+
+
 @app.post("/train/{model_id}")
 async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: Annotated[str, Form()], batch_size: Annotated[str, Form()], training_data: UploadFile, background_tasks: BackgroundTasks, loss: Annotated[str, Form()]):
     print("Compiling model...")
     num_epochs = int(epochs) if epochs else 1
     num_batch_size = int(batch_size) if batch_size else 1
-    model = await db.find_model(model_id)
+    model = db.find_model(model_id)
 
     # build and generate
     run_id = str(uuid4())

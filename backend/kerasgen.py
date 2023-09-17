@@ -1,20 +1,20 @@
 import tensorflow as tf
 import numpy as np
-from tensorflow import keras 
+from tensorflow import keras
 import json
 
 # types of layers available; these two should correspond by index
-LAYER_TYPE_CODES = ["data-input", "dense", "normalization", 
-                    "batch-normalization", "conv1d", "conv2d", 
+LAYER_TYPE_CODES = ["data-input", "dense", "normalization",
+                    "batch-normalization", "conv1d", "conv2d",
                     "conv3d", "flatten", "dropout"]
-LAYER_TYPES = [ keras.Input, keras.layers.Dense, keras.layers.Normalization,
-               keras.layers.BatchNormalization, keras.layers.Conv1D, keras.layers.Conv2D, 
+LAYER_TYPES = [keras.Input, keras.layers.Dense, keras.layers.Normalization,
+               keras.layers.BatchNormalization, keras.layers.Conv1D, keras.layers.Conv2D,
                keras.layers.Conv3D, keras.layers.Flatten, keras.layers.Dropout]
 
 # Argument types for layer params: dict for noting conversion from json, also for type checking
 LAYER_ARG_TYPES = {
-    "shape": "tuple", 
-    "units": "int", 
+    "shape": "tuple",
+    "units": "int",
     "activation": "str",
     "filters": "int",
     "kernel_size": "tuple",
@@ -33,6 +33,8 @@ OPTIMIZERS = {
 }
 
 # Keras model generation class
+
+
 class KerasGen:
     def __init__(self, model_arch, callback_manager):
         self.arch = model_arch
@@ -58,10 +60,13 @@ class KerasGen:
     def training(self, data):
         try:
             data = np.load(data)
-            self.hist = self.model.fit(data["trainx"], data["trainy"], batch_size=self.batch_size, epochs=self.epochs, callbacks=[self.callback_manager])
-            self.model.evaluate(data["testx"], data["testy"], batch_size=self.batch_size)
-            keras.models.save_model(self.model, "./models/"+self.callback_manager.model_id+".h5")
-        except: 
+            self.hist = self.model.fit(data["trainx"], data["trainy"], batch_size=self.batch_size,
+                                       epochs=self.epochs, callbacks=[self.callback_manager])
+            self.model.evaluate(
+                data["testx"], data["testy"], batch_size=self.batch_size)
+            keras.models.save_model(
+                self.model, "./models/"+self.callback_manager.model_id+".h5")
+        except:
             print('suck')
             exit()
 
@@ -73,7 +78,7 @@ class KerasGen:
 
     # apply hyperparams
     def compile_model(self, model=None, optimizer=None):
-        # if no model is given, use the 
+        # if no model is given, use the
         if model == None:
             self.status = 'compiled'
             if self.status == 'build':
@@ -84,7 +89,7 @@ class KerasGen:
         model.compile(optimizer, self.loss, metrics=[self.loss, "accuracy"])
         return model
 
-    # assemble a keras model from list of layers 
+    # assemble a keras model from list of layers
     def generate_model(self):
         self.status = 'generated'
         self.model = keras.Sequential()
@@ -131,12 +136,12 @@ class KerasGen:
         while nextLayer != None:
             new_order.append(nextLayer)
             nextLayer = self.__findEdgeTarg(edges, new_order[-1])
-    
+
         # assemble the layers together in the proper order
         for layerid in new_order:
             ordered_layers.append(layers[layer_order.index(layerid)])
         return ordered_layers
-    
+
     # find next layer from a previous layer: find the edge with the prev layer as source, and return the target layer id
     def __findEdgeTarg(self, edges, layerid):
         for edge in edges:
@@ -159,27 +164,31 @@ class KerasGen:
         layer_type = LAYER_TYPES[layerid]
         args = self.__getLayerArgs(layer_type_name, args)
         return layer_type(**args)
-    
+
     # get the required layer params from layer type name
     def __getLayerArgs(self, layer_type_name, layer_arg_vals):
         match layer_type_name:
             case "data-input":
                 args = self.__layerArgsEncoder(layer_arg_vals, ["shape"])
             case "dense":
-                args = self.__layerArgsEncoder(layer_arg_vals, ["units", "activation"])
+                args = self.__layerArgsEncoder(
+                    layer_arg_vals, ["units", "activation"])
             case "normalization":
                 args = self.__layerArgsEncoder(layer_arg_vals, [])
             case "batch-normalization":
                 args = self.__layerArgsEncoder(layer_arg_vals, [])
-            case "conv1d":    
-                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel_size", "strides", "padding"])
-            case "conv2d":    
-                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel_size", "strides", "padding"])
-            case "conv3d":    
-                args = self.__layerArgsEncoder(layer_arg_vals, ["filters", "kernel_size", "strides", "padding"])
-            case "flatten":    
+            case "conv1d":
+                args = self.__layerArgsEncoder(
+                    layer_arg_vals, ["filters", "kernel_size", "strides", "padding"])
+            case "conv2d":
+                args = self.__layerArgsEncoder(
+                    layer_arg_vals, ["filters", "kernel_size", "strides", "padding"])
+            case "conv3d":
+                args = self.__layerArgsEncoder(
+                    layer_arg_vals, ["filters", "kernel_size", "strides", "padding"])
+            case "flatten":
                 args = self.__layerArgsEncoder(layer_arg_vals, [])
-            case "dropout":    
+            case "dropout":
                 args = self.__layerArgsEncoder(layer_arg_vals, ["rate"])
         return args
 
@@ -190,14 +199,17 @@ class KerasGen:
             # check that argument is valid
             # should check that types match too (in getData()) in the future
             if arg in LAYER_ARG_TYPES:
-                return_args[arg] = self.__getData(values[arg], LAYER_ARG_TYPES[arg])
+                return_args[arg] = self.__getData(
+                    values[arg], LAYER_ARG_TYPES[arg])
         return return_args
 
     def __getData(self, value, type):
         match type:
             case "tuple":
-                try: iter(value)
-                except: value = (value,)
+                try:
+                    iter(value)
+                except:
+                    value = (value,)
                 return tuple(value)
             case "int":
                 return int(value)
@@ -205,15 +217,16 @@ class KerasGen:
                 return str(value)
             case _:
                 print("Error (kerasgen.py): Invalid layer argument type")
-                
+
     def get_args(self):
         return self.return_args
 
-# test        
-if __name__=="__main__":
+
+# test
+if __name__ == "__main__":
     f = open("./test.json")
     gen = KerasGen(f.read())
     gen.translate_layers()
     gen.generate_model()
-    m=gen.compile_model()
+    m = gen.compile_model()
     print(m.optimizer)

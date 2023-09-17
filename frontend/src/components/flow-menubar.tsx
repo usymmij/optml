@@ -11,6 +11,7 @@ import {
 
 type FlowMenubarProps = {
   onSave: () => void;
+  onDownload: () => void;
   className?: string;
 };
 
@@ -30,7 +31,7 @@ function FlowMenubar(props: FlowMenubarProps) {
               Save <MenubarShortcut>⌘S</MenubarShortcut>
             </MenubarItem>
             <MenubarSeparator />
-            <MenubarItem>Export...</MenubarItem>
+            <MenubarItem onSelect={props.onDownload}>Download model...</MenubarItem>
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
