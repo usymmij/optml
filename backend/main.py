@@ -6,7 +6,6 @@ from callback_manager import CallbackManager
 from connection_manager import ConnectionManager
 from database import Database
 from kerasgen import KerasGen
-import numpy as np
 
 manager = ConnectionManager()
 db = Database()
@@ -23,12 +22,12 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    await db.connect()
+    db.connect()
 
 
 @app.on_event("shutdown")
 async def shutdown():
-    await db.disconnect()
+    db.disconnect()
 
 
 @app.websocket("/ws/{model_id}")
@@ -48,14 +47,14 @@ async def websocket_endpoint(websocket: WebSocket, model_id: str):
 
 @app.post("/create")
 async def create_model():
-    model = await db.create_model()
+    model = db.create_model()
     return model.id
 
 
 @app.post("/update/{model_id}")
 async def update_model(model_id: str, model_data: dict):
     try:
-        await db.update_model(model_id, model_data)
+        db.update_model(model_id, model_data)
     except:
         raise HTTPException(status_code=404, detail="Model not found")
     return model_id
@@ -64,7 +63,7 @@ async def update_model(model_id: str, model_data: dict):
 @app.get("/model/{model_id}")
 async def retrieve_model(model_id):
     try:
-        model = await db.find_model(model_id)
+        model = db.find_model(model_id)
         return model.flow_data
     except:
         raise HTTPException(status_code=404, detail="Model not found")
@@ -73,7 +72,7 @@ async def retrieve_model(model_id):
 @app.get("/model/{model_id}/stats")
 async def retrieve_model_stats(model_id, run_id: str):
     try:
-        return await db.get_stats(model_id, run_id)
+        return db.get_stats(model_id, run_id)
     except:
         raise HTTPException(status_code=404, detail="Model not found")
 
