@@ -82,7 +82,7 @@ async def train_model(model_id: str, optimizer: Annotated[str, Form()], epochs: 
     print("Compiling model...")
     num_epochs = int(epochs) if epochs else 1
     num_batch_size = int(batch_size) if batch_size else 1
-    model = await db.find_model(model_id)
+    model = db.find_model(model_id)
 
     # build and generate
     run_id = str(uuid4())

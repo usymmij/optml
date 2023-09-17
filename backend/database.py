@@ -48,11 +48,11 @@ class Database:
             'loss': loss
         })
 
-    async def get_stats(self, model_id, run_id: str):
-        return await self.db.optmlmodelstats.find_many(where={
+    def get_stats(self, model_id, run_id: str):
+        return self.db.optmlmodelstats.find_many(where={
             'optml_id': model_id,
             'run_id': run_id
         })
 
-    async def disconnect(self):
-        await self.db.disconnect()
+    def disconnect(self):
+        self.db.disconnect()
