@@ -89,7 +89,13 @@ export default function TrainDialog(
         isOpen={progressSheetOpen}
         setOpen={setProgressSheetOpen}
       />
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog
+        open={open}
+        onOpenChange={(open) => {
+          setOpen(open);
+          setRunId(null);
+        }}
+      >
         <DialogTrigger asChild>{props.children}</DialogTrigger>
         <DialogContent>
           <DialogHeader>
