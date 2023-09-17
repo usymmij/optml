@@ -59,7 +59,8 @@ class KerasGen:
         try:
             data = np.load(data)
             self.hist = self.model.fit(data["trainx"], data["trainy"], batch_size=self.batch_size, epochs=self.epochs, callbacks=[self.callback_manager])
-            self.model.evaluate(data["testx"], data["testy"], batch_size=self.batch_size) 
+            self.model.evaluate(data["testx"], data["testy"], batch_size=self.batch_size)
+            keras.models.save_model(self.model, "./models/"+self.callback_manager.model_id+".h5")
         except: 
             print('suck')
             exit()
